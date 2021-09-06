@@ -1,19 +1,24 @@
 package server
 
 import (
-	"fmt"
 	"log"
 
+	"github.com/Backend-GAuth-server/server/middleware"
+	v1 "github.com/Backend-GAuth-server/server/v1"
+	auth "github.com/Backend-GAuth-server/server/v1/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Start() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		msg := fmt.Sprintln("Hello")
-		return c.SendString(msg)
-	})
+	app.Group("/api")
+
+	v1Router := app.Group("/api", middleware.Test)
+	v1Router.Get("/life", v1.Life)
+
+	authRouter := v1Router.Group("/auth", middleware.Test)
+	authRouter.Get("/", auth.Login)
 
 	log.Fatal(app.Listen(":8080"))
 }
