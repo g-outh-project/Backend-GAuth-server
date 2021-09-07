@@ -17,7 +17,9 @@ func Login(c *fiber.Ctx) error {
 }
 
 func Signup(c *fiber.Ctx) error {
-	var req dto.LoginReq
+	var req dto.SignupReq
+	utils.ByteToObj(c.Body(), &req)
 	fmt.Println(req)
-	return c.JSON(req)
+	c.SendStatus(201)
+	return nil
 }
