@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 )
@@ -53,14 +53,14 @@ func GetSecretKey() string {
 }
 
 // Translate objest to byte & response payload with []byte type
-func MarshalAndRW(status int, res interface{}, rw http.ResponseWriter) {
+func MarshalAndRes(status int, res interface{}, c *fiber.Ctx) {
 	// Set status code
-	rw.WriteHeader(status)
+	c.SendStatus(status)
 
 	// Translate object to byte array
 	resByte, err := json.MarshalIndent(res, "", "	")
 	HandleErr(err)
 
 	// Response payload
-	rw.Write(resByte)
+	c.Send(resByte)
 }
