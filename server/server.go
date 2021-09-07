@@ -18,7 +18,8 @@ func Start() {
 	v1Router.Get("/life", v1.Life)
 
 	authRouter := v1Router.Group("/auth", middleware.Test)
-	authRouter.Get("/", auth.Login)
+	authRouter.Get("/login", auth.Login)
+	authRouter.Get("/signup", auth.Signup)
 
 	log.Fatal(app.Listen(":8080"))
 }
