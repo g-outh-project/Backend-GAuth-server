@@ -13,7 +13,14 @@ func JSONMiddleware(c *fiber.Ctx) error {
 }
 
 func AuthMiddleware(c *fiber.Ctx) error {
-	jwt, _ := utils.GetTokenString(c)
-	fmt.Println(jwt)
+
+	jwt, err := utils.GetTokenString(c)
+	utils.HandleErr(err)
+
+	_, user, err := utils.ValidateToken(string(jwt))
+	if err != nil {
+		return c.SendStatus(401)
+	}
+	fmt.Println(user.Id)
 	return c.Next()
 }
