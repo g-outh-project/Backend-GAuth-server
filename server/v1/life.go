@@ -7,6 +7,9 @@ type test struct {
 }
 
 func Life(c *fiber.Ctx) error {
-	res := test{data: "hello"}
-	return c.JSON(res)
+
+	return c.Status(200).JSON(&fiber.Map{
+		"success": true,
+		"posts":   "posts",
+	})
 }

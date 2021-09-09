@@ -10,9 +10,11 @@ import (
 
 func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
+	var res dto.LoginRes
 	utils.ByteToObj(c.Body(), &req)
-	fmt.Println(req)
-	utils.MarshalAndRes(200, req, c)
+	res.AccessToken = utils.AccessToken(req.Id, req.Password)
+	res.RefreshToken = utils.RefreshToken(req.Id, req.Password)
+	utils.MarshalAndRes(200, res, c)
 	return nil
 }
 

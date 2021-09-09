@@ -27,14 +27,14 @@ func Start() {
 		TimeZone:   "Asia/Seoul",
 	}))
 
-	app.Group("/api")
-
 	v1Router := app.Group("/api", middleware.JSONMiddleware)
 	v1Router.Get("/life", v1.Life)
 
-	authRouter := v1Router.Group("/auth", middleware.AuthMiddleware)
+	authRouter := v1Router.Group("/auth")
 	authRouter.Get("/login", auth.Login)
 	authRouter.Get("/signup", auth.Signup)
 
+	testRouter := v1Router.Group("/test", middleware.AuthMiddleware)
+	testRouter.Get("/test", v1.Life)
 	log.Fatal(app.Listen(":8080"))
 }
