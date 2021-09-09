@@ -13,15 +13,15 @@ var testSignKey = []byte("TestForFasthttpWithJWT")
 
 // Credential type
 type userCredential struct {
-	Email     string `json:"email"`
-	IsStudent bool   `json:"isStudent"`
+	Id       string `json:"id"`
+	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
 // GetToken function
 func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 	// Get token from request token
-	jwt := c.Request().Header.Header()
+	jwt := c.Request().Header.Peek("Authorization")
 
 	// Token length validation
 	if len(jwt) == 0 {
@@ -30,15 +30,15 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 	}
 
 	// Return token with type []byte
-	return []byte(jwt), nil
+	return jwt, nil
 }
 
 // Generate accessToken
-func AccessToken(email string, isStudent bool) string {
+func AccessToken(id string, password string) string {
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
-		Email:     email,
-		IsStudent: isStudent,
+		Id:       id,
+		Password: password,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(), // 10 Mins
 		},
@@ -55,11 +55,11 @@ func AccessToken(email string, isStudent bool) string {
 }
 
 // Generate refreshToken
-func RefreshToken(email string, isStudent bool) string {
+func RefreshToken(id string, password string) string {
 	// Generate Token object
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
-		Email:     email,
-		IsStudent: isStudent,
+		Id:       id,
+		Password: password,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(336 * time.Hour).Unix(), // 14Days
 		},
