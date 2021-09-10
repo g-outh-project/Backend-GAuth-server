@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/Backend-GAuth-server/server/middleware"
 	v1 "github.com/Backend-GAuth-server/server/v1"
@@ -14,13 +15,25 @@ import (
 
 func Start() {
 	app := fiber.New()
-	file, err := os.OpenFile("./123.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile("./"+time.Now().Format("20060102")+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
 	defer file.Close()
 
-	app.Use(limiter.New())
+	app.Use(limiter.New(limiter.Config{
+		Max:        10,
+		Expiration: 30 * time.Second,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return c.IP()
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(429).JSON(&fiber.Map{
+				"statusCode":   429,
+				"errorMessage": "Too many Request",
+			})
+		},
+	}))
 	app.Use(logger.New(logger.Config{
 		Format:     "${blue} [${time}] ${status} - ${method} ${path} ${latency}\n",
 		TimeFormat: "15:04:03",

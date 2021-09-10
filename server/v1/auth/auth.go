@@ -11,6 +11,7 @@ import (
 func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
 	var res dto.LoginRes
+
 	utils.ByteToObj(c.Body(), &req)
 	res.AccessToken = utils.AccessToken(req.Id, req.Password)
 	res.RefreshToken = utils.RefreshToken(req.Id, req.Password)
