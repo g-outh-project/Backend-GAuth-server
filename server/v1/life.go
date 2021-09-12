@@ -1,6 +1,11 @@
 package v1
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"errors"
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 type test struct {
 	data string
@@ -12,4 +17,9 @@ func Life(c *fiber.Ctx) error {
 		"success": true,
 		"posts":   "posts",
 	})
+}
+
+func Shutdown(c *fiber.Ctx) error {
+	log.Panic()
+	return errors.New("hello")
 }
