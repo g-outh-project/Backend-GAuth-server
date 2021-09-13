@@ -23,8 +23,7 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-  
-  deploy:
+      
     steps:
     - name: executing remote ssh commands using password
       uses: Backend-GAuth-server/ssh-action@main
