@@ -32,4 +32,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          whoami
+          cd ~/Documents/Backend-GAuth-server
+          git pull
+          go build -v ./...
+          pm2 start ./main --name GO-AUTH
