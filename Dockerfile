@@ -18,5 +18,5 @@ FROM scratch
 COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
 
-EXPOSE 4500
+EXPOSE 8080
 ENTRYPOINT ["/main"]
