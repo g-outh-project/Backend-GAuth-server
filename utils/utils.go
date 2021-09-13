@@ -33,15 +33,6 @@ func Hash(payload interface{}) string {
 	return fmt.Sprintf("%x", hash)
 }
 
-// Translate payload with []byte type to object
-func ByteToObj(payload []byte, object interface{}) {
-	// payload type translate
-	err := json.Unmarshal(payload, &object)
-	if err != nil {
-		logger.Error(err)
-	}
-}
-
 func GetSecretKey() string {
 	// jwt Key
 	var jwtConfig map[string]string
