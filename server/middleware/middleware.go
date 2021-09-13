@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 
+	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,9 +19,13 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	utils.HandleErr(err)
 
 	_, user, err := utils.ValidateToken(string(jwt))
+
+	fmt.Println(user.Id)
+	data := method.SelectUserById(user.Id)
+
+	fmt.Println(data.Name)
 	if err != nil {
 		return c.SendStatus(401)
 	}
-	fmt.Println(user.Id)
 	return c.Next()
 }
