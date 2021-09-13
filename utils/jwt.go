@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/Backend-GAuth-server/dto"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,8 +14,14 @@ var testSignKey = []byte("TestForFasthttpWithJWT")
 
 // Credential type
 type userCredential struct {
-	Id       string `json:"id"`
-	Password string `json:"password"`
+	Uid               string `json:"uid"`
+	Id                string `json:"id"`
+	Email             string `json:"email"`
+	Name              string `json:"name"`
+	School            string `json:"school"`
+	Birth             string `json:"birth"`
+	Nickname          string `json:"nickname"`
+	HashedAccessToken string `json:"hashedAccessToken"`
 	jwt.StandardClaims
 }
 
@@ -34,11 +41,16 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 }
 
 // Generate accessToken
-func AccessToken(id string, password string) string {
+func AccessToken(data dto.JWTSource) string {
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
-		Id:       id,
-		Password: password,
+		Uid:      data.Uid,
+		Id:       data.Id,
+		Email:    data.Email,
+		Name:     data.Name,
+		School:   data.School,
+		Birth:    data.Birth,
+		Nickname: data.Nickname,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(), // 10 Mins
 		},
@@ -55,11 +67,10 @@ func AccessToken(id string, password string) string {
 }
 
 // Generate refreshToken
-func RefreshToken(id string, password string) string {
+func RefreshToken(data dto.JWTSource) string {
 	// Generate Token object
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
-		Id:       id,
-		Password: password,
+		HashedAccessToken: data.HashedAccessToken,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(336 * time.Hour).Unix(), // 14Days
 		},
