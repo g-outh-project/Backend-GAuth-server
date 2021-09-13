@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 
+	"github.com/Backend-GAuth-server/model"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -28,8 +29,9 @@ func Start() {
 	)
 
 	db, err = gorm.Open(mysql.Open(mysqlCredentials), &gorm.Config{})
-
 	utils.HandlePanic(err)
+
+	db.AutoMigrate(&model.User{})
 }
 
 func GetDB() *gorm.DB {
