@@ -20,6 +20,13 @@ func InsertUser(user dto.SignupReq) {
 	})
 }
 
+func SelectUserById(id string) model.User {
+	var user model.User
+	db := db.GetDB()
+	db.Find(&user, model.User{Id: id})
+	return user
+}
+
 func SelectUser() []model.User {
 	var users []model.User
 	db := db.GetDB()
