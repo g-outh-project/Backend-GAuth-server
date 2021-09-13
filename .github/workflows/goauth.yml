@@ -22,10 +22,12 @@ jobs:
       run: go build -v ./...
 
   test:
+    steps:
     - name: Test
       run: go test -v ./...
 
   deploy:
+    steps:
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
