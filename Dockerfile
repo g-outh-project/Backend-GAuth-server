@@ -19,4 +19,4 @@ COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
 
 EXPOSE 4500
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["sh", "./main"]
