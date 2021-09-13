@@ -32,5 +32,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          docker build . -t Go-Auth
-          docker run -p 5080:8080 Go-Auth
+          docker build . -t go-auth-server
+          docker run -p 5080:8080 go-auth-server
