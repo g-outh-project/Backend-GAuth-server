@@ -1,4 +1,4 @@
-name: Go
+name: Go CI/CD
 
 on:
   push:
@@ -23,3 +23,14 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+  deploy:
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@main
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: whoami
