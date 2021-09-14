@@ -35,4 +35,4 @@ jobs:
           cd ~/Documents/Backend-GAuth-server
           git pull
           docker build . -t go-auth-server
-          docker run -p 5080:8080 go-auth-server
+          docker run -d --name Go-Auth-Server -p 5080:8080 go-auth-server
