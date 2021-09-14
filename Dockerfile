@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY . . 
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-s' -o main .
+RUN go build -o main .
 
 
 WORKDIR /dist
@@ -19,4 +19,4 @@ COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
 
 EXPOSE 4500
-ENTRYPOINT ["sh", "./main"]
+ENTRYPOINT ["./main"]
