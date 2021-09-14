@@ -37,3 +37,12 @@ jobs:
           docker build . -t go-auth-server
           docker rm Go-Auth-Server
           docker run -d --name Go-Auth-Server -p 5080:8080 go-auth-server
+    
+    - name: Notice
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,workflow,job,took # selectable (default: repo,message)
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
