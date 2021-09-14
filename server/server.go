@@ -13,7 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
-func Start() {
+func Start() *fiber.App {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
@@ -41,4 +41,6 @@ func Start() {
 	testRouter.Get("/test", v1.Life)
 	testRouter.Get("/shutdown", v1.Shutdown)
 	log.Fatal(app.Listen(":8080"))
+
+	return app
 }
