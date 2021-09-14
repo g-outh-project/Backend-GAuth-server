@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY . . 
 RUN go mod download
-RUN go build -o main .
+RUN go build -o main
 
 
 WORKDIR /dist
@@ -18,5 +18,5 @@ FROM scratch
 COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
 
-EXPOSE 4500
+EXPOSE 8080
 ENTRYPOINT ["./main"]
