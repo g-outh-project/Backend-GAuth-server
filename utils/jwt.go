@@ -44,12 +44,8 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 func AccessToken(data dto.JWTSource) string {
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
-		Uid:      data.Uid,
 		Id:       data.Id,
-		Email:    data.Email,
 		Name:     data.Name,
-		School:   data.School,
-		Birth:    data.Birth,
 		Nickname: data.Nickname,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(), // 10 Mins
