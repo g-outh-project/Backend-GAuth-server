@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"time"
-
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
@@ -13,24 +11,20 @@ func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
 	var res dto.LoginRes
 
-	userData := dto.JWTSource{
-		Uid:               "123",
-		Id:                "123",
-		Email:             "123",
-		Name:              "123",
-		School:            "123",
-		Birth:             "123",
-		Nickname:          "123",
-		HashedAccessToken: "",
-		CreatedAt:         time.Now().UTC(),
-	}
-
 	err := c.BodyParser(&req)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
+
+	userData := dto.JWTSource{
+		Id:                "123",
+		Name:              "123",
+		Nickname:          "123",
+		HashedAccessToken: "",
+	}
+
 	res.AccessToken = utils.AccessToken(userData)
 	userData.HashedAccessToken = utils.Hash(res.AccessToken)
 	res.RefreshToken = utils.RefreshToken(userData)
