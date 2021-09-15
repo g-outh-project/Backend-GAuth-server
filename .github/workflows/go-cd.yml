@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+    
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
