@@ -7,9 +7,9 @@ import (
 	"github.com/Backend-GAuth-server/utils"
 )
 
-func InsertUser(user dto.SignupReq) {
+func InsertUser(user dto.SignupReq) error {
 	db := db.GetDB()
-	db.Create(&model.User{
+	tx := db.Create(&model.User{
 		Id:       user.Id,
 		Password: utils.Hash(user.Password),
 		Name:     user.Name,
@@ -18,18 +18,28 @@ func InsertUser(user dto.SignupReq) {
 		Birth:    user.Birth,
 		Nickname: user.Nickname,
 	})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
 
-func SelectUserById(id string) model.User {
+func SelectUserById(id string) (model.User, error) {
 	var user model.User
 	db := db.GetDB()
-	db.Find(&user, model.User{Id: id})
-	return user
+	tx := db.Find(&user, model.User{Id: id})
+	if tx.Error != nil {
+		return user, tx.Error
+	}
+	return user, nil
 }
 
-func SelectUser() []model.User {
+func SelectUser() ([]model.User, error) {
 	var users []model.User
 	db := db.GetDB()
-	db.Select("*").Find(&users)
-	return users
+	tx := db.Select("*").Find(&users)
+	if tx.Error != nil {
+		return users, tx.Error
+	}
+	return users, nil
 }
