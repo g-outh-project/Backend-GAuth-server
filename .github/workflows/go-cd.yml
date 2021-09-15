@@ -10,15 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Notice
-      uses: 8398a7/action-slack@v3
-      with:
-        initial_comment: '${{ github.status }} CD start'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-      if: always() # Pick up events even if the job fails or is canceled.
-
+    
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
