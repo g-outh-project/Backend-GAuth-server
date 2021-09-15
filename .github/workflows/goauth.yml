@@ -35,8 +35,9 @@ jobs:
           cd ~/Documents/Backend-GAuth-server
           git pull
           docker build . -t go-auth-server
-          docker stop Go-Auth-server
+          docker stop Go-Auth-Server
           docker rm Go-Auth-Server
+          docker image prune -f
           docker run -d --name Go-Auth-Server -p 5080:8080 go-auth-server
     
     - name: Notice

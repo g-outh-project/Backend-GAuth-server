@@ -1,14 +1,15 @@
 package model
 
-import "gorm.io/gorm"
+import "time"
 
 type User struct {
-	gorm.Model
-	Id       string
-	Password string
-	Name     string
-	Nickname string
-	Birth    string
-	Email    string
-	School   string
+	Id        string `gorm:"primaryKey"`
+	Password  string
+	Name      string
+	Nickname  string
+	Birth     string
+	Email     string
+	School    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

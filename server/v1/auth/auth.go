@@ -48,7 +48,12 @@ func Signup(c *fiber.Ctx) error {
 		})
 	}
 
-	method.InsertUser(req)
+	err = method.InsertUser(req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "same id is exist",
+		})
+	}
 
 	c.SendStatus(201)
 	return nil
