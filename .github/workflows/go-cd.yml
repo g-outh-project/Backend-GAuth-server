@@ -1,14 +1,16 @@
-name: Go CI/CD
+name: Go CD
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
 
   build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
