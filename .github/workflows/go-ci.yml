@@ -11,6 +11,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Notice
+      uses: 8398a7/action-slack@v3
+      with:
+        initial_comment: '${{ github.commit }} CI start'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -21,3 +29,12 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Notice
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,took # selectable (default: repo,message)
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
