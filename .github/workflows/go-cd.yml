@@ -14,6 +14,7 @@ jobs:
     - name: Notice
       uses: 8398a7/action-slack@v3
       with:
+        status: ${{ job.status }}
         initial_comment: '${{ github.commit }} CD start'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
