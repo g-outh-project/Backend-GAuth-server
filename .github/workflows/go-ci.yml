@@ -31,12 +31,3 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       if: always() # Pick up events even if the job fails or is canceled.
-
-    - name: Automatically Merge PR
-      uses: plm9606/automerge_actions@1.2.2
-      with:
-        # The label name to automatically merge. Default is "automerge".
-        label-name:
-        
-        # GitHub WebHook Secret Token
-        github-token: ${{ secrets.TOKEN }}
