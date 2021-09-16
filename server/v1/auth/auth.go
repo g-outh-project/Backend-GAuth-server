@@ -18,10 +18,23 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	user, err := method.SelectUserById(req.Id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if user.Password != utils.Hash(req.Password) {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"message": "invalid password",
+		})
+	}
+
 	userData := dto.JWTSource{
-		Id:                "123",
-		Name:              "123",
-		Nickname:          "123",
+		Id:                user.Id,
+		Name:              user.Name,
+		Nickname:          user.Nickname,
 		HashedAccessToken: "",
 	}
 
