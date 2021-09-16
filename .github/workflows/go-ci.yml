@@ -2,6 +2,7 @@ name: Go CI
 
 on:
   pull_request:
+    types: [labeled]
     branches: [ main ]
 
 jobs:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -30,3 +31,17 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       if: always() # Pick up events even if the job fails or is canceled.
+
+    - name: Automatically Merge PR
+      uses: plm9606/automerge_actions@1.2.2
+      with:
+        # The label name to automatically merge. Default is "automerge".
+        label-name:
+        # The number of reviewers to automatically merge. Default is 1.
+        reviewers-number: 1
+        # The merge method ("merge", "squash", "rebase"). Default is "merge"
+        merge-method: merge
+        # Let the bot delete the merged branch. true or false.
+        auto-delete: false
+        # GitHub WebHook Secret Token
+        github-token: ${{ secrets.TOKEN }}
