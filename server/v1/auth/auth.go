@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
@@ -91,7 +89,19 @@ func RefreshToken(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println(hashedJWT)
-	fmt.Println(user.HashedAccessToken)
-	return nil
+	jwtSource := dto.JWTSource{
+		Id:                user.Id,
+		Name:              user.Name,
+		School:            user.School,
+		Nickname:          user.Nickname,
+		HashedAccessToken: "",
+	}
+	accessToken := utils.AccessToken(jwtSource)
+	jwtSource.HashedAccessToken = utils.Hash(accessToken)
+	refreshToken := utils.RefreshToken(jwtSource)
+
+	return c.Status(fiber.StatusOK).JSON(dto.RefreshRes{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	})
 }
