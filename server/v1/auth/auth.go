@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"fmt"
+
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
@@ -35,6 +37,7 @@ func Login(c *fiber.Ctx) error {
 		Id:                user.Id,
 		Name:              user.Name,
 		Nickname:          user.Nickname,
+		School:            user.School,
 		HashedAccessToken: "",
 	}
 
@@ -63,5 +66,32 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	c.SendStatus(201)
+	return nil
+}
+
+func RefreshToken(c *fiber.Ctx) error {
+	var req dto.RefreshReq
+
+	err := c.BodyParser(&req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+	_, user, err := utils.ValidateToken(req.RefreshToken)
+
+	jwt, err := utils.GetTokenString(c)
+	utils.HandleErr(err)
+
+	hashedJWT := utils.Hash(string(jwt))
+
+	if hashedJWT != user.HashedAccessToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"message": "invalid RefreshToken",
+		})
+	}
+
+	fmt.Println(hashedJWT)
+	fmt.Println(user.HashedAccessToken)
 	return nil
 }
