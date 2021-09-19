@@ -8,6 +8,7 @@ type Jwt struct {
 type JWTSource struct {
 	Id                string `json:"id"`
 	Name              string `json:"name"`
+	School            string `json:"school"`
 	Nickname          string `json:"nickname"`
 	HashedAccessToken string `json:"hashedAccessToken"`
 }

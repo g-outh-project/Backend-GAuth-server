@@ -1,3 +1,5 @@
+package dto
+
 type RefreshReq struct {
 	RefreshToken string `json:"refreshToken"`
 }
