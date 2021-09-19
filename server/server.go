@@ -32,6 +32,7 @@ func Start() *fiber.App {
 	// Routing
 	v1Router := app.Group("/api", middleware.JSONMiddleware)
 	v1Router.Get("/life", v1.Life)
+	v1Router.Get("/refresh", auth.RefreshToken)
 
 	authRouter := v1Router.Group("/auth")
 	authRouter.Get("/login", auth.Login)
