@@ -77,6 +77,11 @@ func RefreshToken(c *fiber.Ctx) error {
 		})
 	}
 	_, user, err := utils.ValidateToken(req.RefreshToken)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
 	jwt, err := utils.GetTokenString(c)
 	utils.HandleErr(err)
