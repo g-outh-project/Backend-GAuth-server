@@ -61,7 +61,7 @@ func OpenLogger() *os.File {
 	return file
 }
 
-func CSRFConfig() csrf.Config {
+func Csrf() csrf.Config {
 	app := csrf.Config{
 		KeyLookup:      "header:X-Csrf-Token",
 		CookieName:     "csrf_",
