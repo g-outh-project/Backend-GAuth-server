@@ -42,8 +42,8 @@ func Login(c *fiber.Ctx) error {
 	res.AccessToken = utils.AccessToken(userData)
 	userData.HashedAccessToken = utils.Hash(res.AccessToken)
 	res.RefreshToken = utils.RefreshToken(userData)
-	utils.MarshalAndRes(200, res, c)
-	return nil
+
+	return c.Status(fiber.StatusOK).JSON(res)
 }
 
 func Signup(c *fiber.Ctx) error {
