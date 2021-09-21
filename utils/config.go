@@ -28,7 +28,17 @@ func Limiter() limiter.Config {
 	return app
 }
 
-func Logger(file *os.File) logger.Config {
+func ConsoleLogger() logger.Config {
+	app := logger.Config{
+		Format:     "${blue} [${time}] ${status} - ${method} ${path} ${latency}\n",
+		TimeFormat: "15:04:03",
+		TimeZone:   "Asia/Seoul",
+	}
+
+	return app
+}
+
+func FileLogger(file *os.File) logger.Config {
 	app := logger.Config{
 		Format:     "${blue} [${time}] ${status} - ${method} ${path} ${latency}\n",
 		TimeFormat: "15:04:03",

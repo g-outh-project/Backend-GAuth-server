@@ -27,7 +27,8 @@ func Start() *fiber.App {
 
 	// Middleware setting
 	app.Use(limiter.New(utils.Limiter()))
-	app.Use(logger.New(utils.Logger(file)))
+	app.Use(logger.New(utils.ConsoleLogger()))
+	app.Use(logger.New(utils.FileLogger(file)))
 
 	// Routing
 	v1Router := app.Group("/api", middleware.JSONMiddleware)
