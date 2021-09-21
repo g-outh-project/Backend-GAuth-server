@@ -9,6 +9,7 @@ import (
 	auth "github.com/Backend-GAuth-server/server/v1/auth"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -28,6 +29,7 @@ func Start() *fiber.App {
 	// Middleware setting
 	app.Use(limiter.New(utils.Limiter()))
 	app.Use(logger.New(utils.ConsoleLogger()))
+	app.Use(csrf.New(utils.CSRFConfig()))
 	app.Use(logger.New(utils.FileLogger(file)))
 
 	// Routing

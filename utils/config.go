@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/utils"
 )
 
 func Limiter() limiter.Config {
@@ -30,7 +32,7 @@ func Limiter() limiter.Config {
 
 func ConsoleLogger() logger.Config {
 	app := logger.Config{
-		Format:     "${blue} [${time}] ${status} - ${method} ${path} ${latency}\n",
+		Format:     "${blue} [${time}] [${ip}] ${status} - ${method} ${path} ${latency}\n",
 		TimeFormat: "15:04:03",
 		TimeZone:   "Asia/Seoul",
 	}
@@ -40,7 +42,7 @@ func ConsoleLogger() logger.Config {
 
 func FileLogger(file *os.File) logger.Config {
 	app := logger.Config{
-		Format:     "${blue} [${time}] ${status} - ${method} ${path} ${latency}\n",
+		Format:     "${blue} [${time}] [${ip}] ${status} - ${method} ${path} ${latency}\n",
 		TimeFormat: "15:04:03",
 		TimeZone:   "Asia/Seoul",
 		Output:     file,
@@ -50,11 +52,23 @@ func FileLogger(file *os.File) logger.Config {
 }
 
 func OpenLogger() *os.File {
-	file, err := os.OpenFile("./"+time.Now().Format("20060102")+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile("./logs/"+time.Now().Format("20060102")+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 		HandlePanic(err)
 	}
 
 	return file
+}
+
+func CSRFConfig() csrf.Config {
+	app := csrf.Config{
+		KeyLookup:      "header:X-Csrf-Token",
+		CookieName:     "csrf_",
+		CookieSameSite: "Strict",
+		Expiration:     1 * time.Hour,
+		KeyGenerator:   utils.UUID,
+	}
+
+	return app
 }
