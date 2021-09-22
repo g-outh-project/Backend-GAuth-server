@@ -2,11 +2,9 @@ package utils
 
 import (
 	"crypto/sha512"
-	"encoding/json"
 	"fmt"
 	"log"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 )
@@ -41,17 +39,4 @@ func GetSecretKey() string {
 
 	var jwtSignKey = jwtConfig["JWT_SECRET"]
 	return jwtSignKey
-}
-
-// Translate objest to byte & response payload with []byte type
-func MarshalAndRes(status int, res interface{}, c *fiber.Ctx) {
-	// Set status code
-	c.SendStatus(status)
-
-	// Translate object to byte array
-	resByte, err := json.MarshalIndent(res, "", "	")
-	HandleErr(err)
-
-	// Response payload
-	c.Send(resByte)
 }

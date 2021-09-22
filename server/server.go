@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Backend-GAuth-server/db"
@@ -9,11 +10,16 @@ import (
 	auth "github.com/Backend-GAuth-server/server/v1/auth"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/pprof"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start() *fiber.App {
+func Start(port int) *fiber.App {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
@@ -26,8 +32,16 @@ func Start() *fiber.App {
 	defer file.Close()
 
 	// Middleware setting
+	app.Use(cors.New())
+	app.Use(pprof.New())
+	app.Use(recover.New())
+
+	app.Use(csrf.New(utils.Csrf()))
 	app.Use(limiter.New(utils.Limiter()))
-	app.Use(logger.New(utils.Logger(file)))
+	app.Use(logger.New(utils.ConsoleLogger()))
+	app.Use(logger.New(utils.FileLogger(file)))
+
+	app.Get("/dashboard", monitor.New())
 
 	// Routing
 	v1Router := app.Group("/api", middleware.JSONMiddleware)
@@ -41,7 +55,8 @@ func Start() *fiber.App {
 	testRouter := v1Router.Group("/test", middleware.AuthMiddleware)
 	testRouter.Get("/test", v1.Life)
 	testRouter.Get("/shutdown", v1.Shutdown)
-	log.Fatal(app.Listen(":8080"))
+
+	log.Fatal(app.Listen(":" + fmt.Sprint(port)))
 
 	return app
 }
