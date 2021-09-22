@@ -41,7 +41,7 @@ func Start(port int) *fiber.App {
 	app.Use(logger.New(utils.ConsoleLogger()))
 	app.Use(logger.New(utils.FileLogger(file)))
 
-	app.Get("/", monitor.New())
+	app.Get("/dashboard", monitor.New())
 
 	// Routing
 	v1Router := app.Group("/api", middleware.JSONMiddleware)
