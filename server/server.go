@@ -19,7 +19,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start(port int) *fiber.App {
+func Start(port int) {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
@@ -57,6 +57,4 @@ func Start(port int) *fiber.App {
 	testRouter.Get("/shutdown", v1.Shutdown)
 
 	log.Fatal(app.Listen(":" + fmt.Sprint(port)))
-
-	return app
 }
