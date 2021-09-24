@@ -12,7 +12,7 @@ import (
 func usage() {
 	fmt.Printf("Welcome to GAUTH\n\n")
 	fmt.Printf("Please see the following flags:\n\n")
-	fmt.Printf("-port:			Set the PORT of the server\n")
+	fmt.Printf("-p:			Set the PORT of the server\n")
 	runtime.Goexit()
 }
 
@@ -22,7 +22,7 @@ func Start() {
 		usage()
 	}
 
-	port := flag.Int("port", 8080, "Set port of ther server")
+	port := flag.Int("p", 8080, "Set port of ther server")
 
 	flag.Parse()
 	server.Start(*port)
