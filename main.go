@@ -1,9 +1,7 @@
 package main
 
-import (
-	"github.com/Backend-GAuth-server/server"
-)
+import "github.com/Backend-GAuth-server/cli"
 
 func main() {
-	server.Start(8080)
+	cli.Start()
 }
