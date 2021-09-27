@@ -16,6 +16,8 @@ RUN cp /build/.env .
 
 FROM scratch
 
+WORKDIR /app
+
 COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
 

@@ -19,7 +19,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start(port int) *fiber.App {
+func Start(port int) {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
@@ -41,10 +41,11 @@ func Start(port int) *fiber.App {
 	app.Use(logger.New(utils.ConsoleLogger()))
 	app.Use(logger.New(utils.FileLogger(file)))
 
+	api := app.Group("/api")
 	app.Get("/dashboard", monitor.New())
 
 	// Routing
-	v1Router := app.Group("/api", middleware.JSONMiddleware)
+	v1Router := api.Group("/v1", middleware.JSONMiddleware)
 	v1Router.Get("/life", v1.Life)
 	v1Router.Get("/refresh", auth.RefreshToken)
 
@@ -57,6 +58,4 @@ func Start(port int) *fiber.App {
 	testRouter.Get("/shutdown", v1.Shutdown)
 
 	log.Fatal(app.Listen(":" + fmt.Sprint(port)))
-
-	return app
 }
