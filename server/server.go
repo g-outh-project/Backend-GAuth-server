@@ -41,10 +41,11 @@ func Start(port int) {
 	app.Use(logger.New(utils.ConsoleLogger()))
 	app.Use(logger.New(utils.FileLogger(file)))
 
+	api := app.Group("/api")
 	app.Get("/dashboard", monitor.New())
 
 	// Routing
-	v1Router := app.Group("/api", middleware.JSONMiddleware)
+	v1Router := api.Group("/v1", middleware.JSONMiddleware)
 	v1Router.Get("/life", v1.Life)
 	v1Router.Get("/refresh", auth.RefreshToken)
 
