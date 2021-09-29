@@ -14,7 +14,7 @@ WORKDIR /dist
 RUN cp /build/main .
 RUN cp /build/.env .
 
-FROM scratch
+FROM alpine
 
 WORKDIR /app
 
