@@ -1,9 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/Backend-GAuth-server/db"
 	"github.com/Backend-GAuth-server/server/middleware"
 	v1 "github.com/Backend-GAuth-server/server/v1"
@@ -19,7 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start(port int) {
+func Start() *fiber.App {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
@@ -57,5 +54,5 @@ func Start(port int) {
 	testRouter.Get("/test", v1.Life)
 	testRouter.Get("/shutdown", v1.Shutdown)
 
-	log.Fatal(app.Listen(":" + fmt.Sprint(port)))
+	return app
 }

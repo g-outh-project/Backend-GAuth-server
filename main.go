@@ -1,9 +1,15 @@
 package main
 
-import "github.com/Backend-GAuth-server/server"
+import (
+	"fmt"
+	"log"
+
+	"github.com/Backend-GAuth-server/server"
+)
 
 func main() {
-	server.Start(8080)
+	app := server.Start()
 	// next update
 	// cli.Start()
+	log.Fatal(app.Listen(":" + fmt.Sprint(8000)))
 }
