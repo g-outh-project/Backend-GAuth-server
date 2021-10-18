@@ -9,9 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// test jwtSignKey
-var testSignKey = []byte("TestForFasthttpWithJWT")
-
 // Credential type
 type userCredential struct {
 	Id                string `json:"id"`
@@ -38,7 +35,7 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 }
 
 // Generate accessToken
-func AccessToken(data dto.JWTSource) string {
+func AccessToken(data dto.JWTSource, key string) string {
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
 		Id:                data.Id,
@@ -52,7 +49,7 @@ func AccessToken(data dto.JWTSource) string {
 	})
 
 	// jwt Key
-	jwtSignKey := []byte(GetSecretKey())
+	jwtSignKey := []byte(Hash(key))
 
 	// Sign token
 	access, err := accessToken.SignedString(jwtSignKey)
@@ -62,7 +59,7 @@ func AccessToken(data dto.JWTSource) string {
 }
 
 // Generate refreshToken
-func RefreshToken(data dto.JWTSource) string {
+func RefreshToken(data dto.JWTSource, key string) string {
 	// Generate Token object
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
 		Id:                data.Id,
@@ -76,7 +73,7 @@ func RefreshToken(data dto.JWTSource) string {
 	})
 
 	// jwt Key
-	jwtSignKey := []byte(GetSecretKey())
+	jwtSignKey := []byte(Hash(key))
 
 	// Sign token
 	refresh, err := refreshToken.SignedString(jwtSignKey)

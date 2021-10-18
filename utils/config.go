@@ -14,8 +14,8 @@ import (
 
 func Limiter() limiter.Config {
 	app := limiter.Config{
-		Max:        10,
-		Expiration: 30 * time.Second,
+		Max:        2,
+		Expiration: 1 * time.Second,
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return c.IP()
 		},
