@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
@@ -10,6 +13,10 @@ import (
 func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
 	var res dto.LoginRes
+	var clientID string
+
+	json.Unmarshal(c.Request().Header.Peek("ClientID"), &clientID)
+	fmt.Println(c.Request().Header.Peek("ClientID"), clientID)
 
 	err := c.BodyParser(&req)
 	if err != nil {
@@ -39,9 +46,9 @@ func Login(c *fiber.Ctx) error {
 		HashedAccessToken: "",
 	}
 
-	res.AccessToken = utils.AccessToken(userData)
+	res.AccessToken = utils.AccessToken(userData, "Helo")
 	userData.HashedAccessToken = utils.Hash(res.AccessToken)
-	res.RefreshToken = utils.RefreshToken(userData)
+	res.RefreshToken = utils.RefreshToken(userData, "Helo")
 
 	return c.Status(fiber.StatusOK).JSON(res)
 }
@@ -101,9 +108,9 @@ func RefreshToken(c *fiber.Ctx) error {
 		Nickname:          user.Nickname,
 		HashedAccessToken: "",
 	}
-	accessToken := utils.AccessToken(jwtSource)
+	accessToken := utils.AccessToken(jwtSource, "Helo")
 	jwtSource.HashedAccessToken = utils.Hash(accessToken)
-	refreshToken := utils.RefreshToken(jwtSource)
+	refreshToken := utils.RefreshToken(jwtSource, "Helo")
 
 	return c.Status(fiber.StatusOK).JSON(dto.RefreshRes{
 		AccessToken:  accessToken,
