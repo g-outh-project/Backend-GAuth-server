@@ -1,6 +1,8 @@
 package server
 
 import (
+	"os"
+
 	"github.com/Backend-GAuth-server/db"
 	"github.com/Backend-GAuth-server/server/middleware"
 	v1 "github.com/Backend-GAuth-server/server/v1"
@@ -16,17 +18,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start() *fiber.App {
+func Start() (*fiber.App, *os.File) {
 	// Basic Setting of server
 	app := fiber.New()
 	file := utils.OpenLogger()
 
 	// Start and connect to DB
 	db.Start()
-
-	// Release resource
-	defer db.CloseDB()
-	defer file.Close()
 
 	// Middleware setting
 	app.Use(cors.New())
@@ -54,5 +52,5 @@ func Start() *fiber.App {
 	testRouter.Get("/test", v1.Life)
 	testRouter.Get("/shutdown", v1.Shutdown)
 
-	return app
+	return app, file
 }
