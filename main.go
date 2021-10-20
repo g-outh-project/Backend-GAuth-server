@@ -16,5 +16,5 @@ func main() {
 	defer db.CloseDB()
 	defer file.Close()
 
-	log.Fatal(app.Listen(":" + fmt.Sprint(8000)))
+	log.Fatal(app.Listen(":" + fmt.Sprint(8080)))
 }
