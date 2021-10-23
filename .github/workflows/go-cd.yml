@@ -25,7 +25,7 @@ jobs:
           docker stop Go-Auth-Server
           docker rm Go-Auth-Server
           docker image prune -f
-          docker run -d --name Go-Auth-Server -p 5080:8080 -v ~/logs:/app/logs go-auth-server /bin/bash
+          docker run -d --name Go-Auth-Server -p 5080:8080 -v gauth-logs:/app/logs go-auth-server /bin/bash
     
     - name: Notice
       uses: 8398a7/action-slack@v3
