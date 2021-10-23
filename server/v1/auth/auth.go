@@ -46,9 +46,9 @@ func Login(c *fiber.Ctx) error {
 		HashedAccessToken: "",
 	}
 
-	res.AccessToken = utils.AccessToken(userData, "Helo")
+	res.AccessToken = utils.AccessToken(userData, "Helo") // input token secret key in second argv
 	userData.HashedAccessToken = utils.Hash(res.AccessToken)
-	res.RefreshToken = utils.RefreshToken(userData, "Helo")
+	res.RefreshToken = utils.RefreshToken(userData, "Helo") // input token secret key in second argv
 
 	return c.Status(fiber.StatusOK).JSON(res)
 }
