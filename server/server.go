@@ -42,11 +42,11 @@ func Start() (*fiber.App, *os.File) {
 	// Routing
 	v1Router := api.Group("/v1", middleware.JSONMiddleware)
 	v1Router.Get("/life", v1.Life)
-	v1Router.Put("/refresh", auth.RefreshToken)
 
 	authRouter := v1Router.Group("/auth")
 	authRouter.Post("/login", auth.Login)
 	authRouter.Post("/signup", auth.Signup)
+	v1Router.Put("/refresh", auth.RefreshToken)
 
 	testRouter := v1Router.Group("/test", middleware.AuthMiddleware)
 	testRouter.Get("/test", v1.Life)
