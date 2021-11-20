@@ -1,7 +1,8 @@
 package server
 
 import (
-	"os"
+	"fmt"
+	"log"
 
 	"github.com/Backend-GAuth-server/db"
 	"github.com/Backend-GAuth-server/server/middleware"
@@ -10,7 +11,6 @@ import (
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
@@ -18,9 +18,11 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start() (*fiber.App, *os.File) {
+func Start() {
 	// Basic Setting of server
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		Prefork: true,
+	})
 	file := utils.OpenLogger()
 
 	// Start and connect to DB
@@ -31,26 +33,28 @@ func Start() (*fiber.App, *os.File) {
 	app.Use(pprof.New())
 	app.Use(recover.New())
 
-	app.Use(csrf.New(utils.Csrf()))
+	//app.Use(csrf.New(utils.Csrf()))
 	app.Use(limiter.New(utils.Limiter()))
 	app.Use(logger.New(utils.ConsoleLogger()))
 	app.Use(logger.New(utils.FileLogger(file)))
 
 	api := app.Group("/api")
-	app.Get("/dashboard", monitor.New())
+	api.Get("/dashboard", monitor.New())
 
 	// Routing
-	v1Router := api.Group("/v1", middleware.JSONMiddleware)
+	v1Router := api.Group("/v1")
 	v1Router.Get("/life", v1.Life)
+	v1Router.Put("/refresh", auth.RefreshToken)
 
 	authRouter := v1Router.Group("/auth")
 	authRouter.Post("/login", auth.Login)
 	authRouter.Post("/signup", auth.Signup)
-	v1Router.Put("/refresh", auth.RefreshToken)
 
 	testRouter := v1Router.Group("/test", middleware.AuthMiddleware)
 	testRouter.Get("/test", v1.Life)
 	testRouter.Get("/shutdown", v1.Shutdown)
 
-	return app, file
+	defer file.Close()
+	defer db.CloseDB()
+	log.Fatal(app.Listen(":" + fmt.Sprint(8080)))
 }
