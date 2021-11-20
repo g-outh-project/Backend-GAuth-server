@@ -21,7 +21,7 @@ import (
 func Start() {
 	// Basic Setting of server
 	app := fiber.New(fiber.Config{
-		Prefork: true,
+		Prefork: false,
 	})
 	file := utils.OpenLogger()
 
