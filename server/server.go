@@ -20,9 +20,7 @@ import (
 
 func Start() {
 	// Basic Setting of server
-	app := fiber.New(fiber.Config{
-		Prefork: true,
-	})
+	app := fiber.New()
 	file := utils.OpenLogger()
 
 	// Start and connect to DB
