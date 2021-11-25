@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
@@ -34,5 +36,12 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(401)
 	}
+	return c.Next()
+}
+
+func CIDMiddleware(c *fiber.Ctx) error {
+	cid := c.Request().Header.Peek("gAuth")
+	header := string(cid[:])
+	fmt.Println(header)
 	return c.Next()
 }

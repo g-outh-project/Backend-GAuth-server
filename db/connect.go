@@ -32,6 +32,7 @@ func Start() {
 	utils.HandlePanic(err)
 
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Client{})
 }
 
 func GetDB() *gorm.DB {
