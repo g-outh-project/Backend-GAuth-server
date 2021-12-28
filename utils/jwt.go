@@ -29,7 +29,7 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 	// Token length validation
 	if len(jwt) == 0 {
 		c.SendStatus(401)
-		return nil, errors.New("Token cannot found.")
+		return nil, errors.New("token cannot found")
 	}
 
 	// Return token with type []byte
@@ -39,7 +39,7 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 // Generate accessToken
 func AccessToken(data dto.JWTSource, c *fiber.Ctx) string {
 	cid := GetClientId(c)
-	keyPair, err := method.SelectKeyByCid(cid)
+	keyPair, _ := method.SelectKeyByCid(cid)
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
 		Id:                data.Id,
@@ -70,7 +70,7 @@ func AccessToken(data dto.JWTSource, c *fiber.Ctx) string {
 // Generate refreshToken
 func RefreshToken(data dto.JWTSource, c *fiber.Ctx) string {
 	cid := GetClientId(c)
-	keyPair, err := method.SelectKeyByCid(cid)
+	keyPair, _ := method.SelectKeyByCid(cid)
 
 	// Generate Token object
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
@@ -103,7 +103,7 @@ func ValidateToken(requestToken string, c *fiber.Ctx) (*jwt.Token, *userCredenti
 	user := &userCredential{}
 
 	cid := GetClientId(c)
-	keyPair, err := method.SelectKeyByCid(cid)
+	keyPair, _ := method.SelectKeyByCid(cid)
 
 	if cid == "" {
 		keyPair.Secret = GetSecretKey()
