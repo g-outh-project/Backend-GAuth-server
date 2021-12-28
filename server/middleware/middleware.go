@@ -17,7 +17,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	jwt, err := utils.GetTokenString(c)
 	utils.HandleErr(err)
 
-	_, user, err := utils.ValidateToken(string(jwt))
+	_, user, err := utils.ValidateToken(string(jwt), c)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "expired token",

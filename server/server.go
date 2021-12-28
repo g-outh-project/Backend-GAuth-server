@@ -47,6 +47,7 @@ func Start() {
 	authRouter := v1Router.Group("/auth")
 	authRouter.Post("/login", middleware.CIDMiddleware, auth.Login)
 	authRouter.Post("/signup", auth.Signup)
+	authRouter.Post("/genkey", middleware.AuthMiddleware, auth.GenKey)
 
 	testRouter := v1Router.Group("/test", middleware.AuthMiddleware)
 	testRouter.Get("/test", v1.Life)
