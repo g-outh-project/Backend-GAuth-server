@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"fmt"
-
 	"github.com/Backend-GAuth-server/method"
 	"github.com/Backend-GAuth-server/utils"
 	"github.com/gofiber/fiber/v2"
@@ -19,7 +17,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	jwt, err := utils.GetTokenString(c)
 	utils.HandleErr(err)
 
-	_, user, err := utils.ValidateToken(string(jwt))
+	_, user, err := utils.ValidateToken(string(jwt), c)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "expired token",
@@ -40,8 +38,8 @@ func AuthMiddleware(c *fiber.Ctx) error {
 }
 
 func CIDMiddleware(c *fiber.Ctx) error {
-	cid := c.Request().Header.Peek("gAuth")
-	header := string(cid[:])
-	fmt.Println(header)
+	//cid := c.Request().Header.Peek("gAuth")
+	//header := string(cid[:])
+	//fmt.Println(header)
 	return c.Next()
 }

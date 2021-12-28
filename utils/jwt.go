@@ -2,9 +2,11 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/Backend-GAuth-server/dto"
+	"github.com/Backend-GAuth-server/method"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,7 +29,7 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 	// Token length validation
 	if len(jwt) == 0 {
 		c.SendStatus(401)
-		return nil, errors.New("Token cannot found")
+		return nil, errors.New("token cannot found")
 	}
 
 	// Return token with type []byte
@@ -35,7 +37,9 @@ func GetTokenString(c *fiber.Ctx) ([]byte, error) {
 }
 
 // Generate accessToken
-func AccessToken(data dto.JWTSource, key string) string {
+func AccessToken(data dto.JWTSource, c *fiber.Ctx) string {
+	cid := GetClientId(c)
+	keyPair, _ := method.SelectKeyByCid(cid)
 	// Generate Token object
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
 		Id:                data.Id,
@@ -49,7 +53,12 @@ func AccessToken(data dto.JWTSource, key string) string {
 	})
 
 	// jwt Key
-	jwtSignKey := []byte(Hash(key))
+	if cid == "" {
+		keyPair.Secret = GetSecretKey()
+	}
+	jwtSignKey := []byte(keyPair.Secret)
+	fmt.Println("--------jwt--------")
+	fmt.Println(string(jwtSignKey))
 
 	// Sign token
 	access, err := accessToken.SignedString(jwtSignKey)
@@ -59,7 +68,10 @@ func AccessToken(data dto.JWTSource, key string) string {
 }
 
 // Generate refreshToken
-func RefreshToken(data dto.JWTSource, key string) string {
+func RefreshToken(data dto.JWTSource, c *fiber.Ctx) string {
+	cid := GetClientId(c)
+	keyPair, _ := method.SelectKeyByCid(cid)
+
 	// Generate Token object
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &userCredential{
 		Id:                data.Id,
@@ -73,7 +85,10 @@ func RefreshToken(data dto.JWTSource, key string) string {
 	})
 
 	// jwt Key
-	jwtSignKey := []byte(Hash(key))
+	if cid == "" {
+		keyPair.Secret = GetSecretKey()
+	}
+	jwtSignKey := []byte(Hash(keyPair.Secret))
 
 	// Sign token
 	refresh, err := refreshToken.SignedString(jwtSignKey)
@@ -83,13 +98,20 @@ func RefreshToken(data dto.JWTSource, key string) string {
 }
 
 // Validate token
-func ValidateToken(requestToken string) (*jwt.Token, *userCredential, error) {
+func ValidateToken(requestToken string, c *fiber.Ctx) (*jwt.Token, *userCredential, error) {
 	// Generate Credential object
 	user := &userCredential{}
 
-	// jwt Key
-	jwtSignKey := []byte(GetSecretKey())
+	cid := GetClientId(c)
+	keyPair, _ := method.SelectKeyByCid(cid)
 
+	if cid == "" {
+		keyPair.Secret = GetSecretKey()
+	}
+	// jwt Key
+	jwtSignKey := []byte(keyPair.Secret)
+	fmt.Println("--------jwt--------")
+	fmt.Println(string(jwtSignKey))
 	// Parse token and validate
 	token, err := jwt.ParseWithClaims(requestToken, user, func(token *jwt.Token) (interface{}, error) {
 		return jwtSignKey, nil

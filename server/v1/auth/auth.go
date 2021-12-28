@@ -1,8 +1,7 @@
 package auth
 
 import (
-	"encoding/json"
-	"fmt"
+	"time"
 
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/method"
@@ -13,10 +12,6 @@ import (
 func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
 	var res dto.LoginRes
-	var clientID string
-
-	json.Unmarshal(c.Request().Header.Peek("ClientID"), &clientID)
-	fmt.Println(c.Request().Header.Peek("ClientID"), clientID)
 
 	err := c.BodyParser(&req)
 	if err != nil {
@@ -46,9 +41,9 @@ func Login(c *fiber.Ctx) error {
 		HashedAccessToken: "",
 	}
 
-	res.AccessToken = utils.AccessToken(userData, "Helo") // input token secret key in second argv
+	res.AccessToken = utils.AccessToken(userData, c) // input token secret key in second argv
 	userData.HashedAccessToken = utils.Hash(res.AccessToken)
-	res.RefreshToken = utils.RefreshToken(userData, "Helo") // input token secret key in second argv
+	res.RefreshToken = utils.RefreshToken(userData, c) // input token secret key in second argv
 
 	return c.Status(fiber.StatusOK).JSON(res)
 }
@@ -63,6 +58,7 @@ func Signup(c *fiber.Ctx) error {
 		})
 	}
 
+	req.Password = utils.Hash(req.Password)
 	err = method.InsertUser(req)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -83,7 +79,7 @@ func RefreshToken(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
-	_, user, err := utils.ValidateToken(req.RefreshToken)
+	_, user, err := utils.ValidateToken(req.RefreshToken, c)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": err.Error(),
@@ -108,12 +104,32 @@ func RefreshToken(c *fiber.Ctx) error {
 		Nickname:          user.Nickname,
 		HashedAccessToken: "",
 	}
-	accessToken := utils.AccessToken(jwtSource, "Helo")
+	accessToken := utils.AccessToken(jwtSource, c)
 	jwtSource.HashedAccessToken = utils.Hash(accessToken)
-	refreshToken := utils.RefreshToken(jwtSource, "Helo")
+	refreshToken := utils.RefreshToken(jwtSource, c)
 
 	return c.Status(fiber.StatusOK).JSON(dto.RefreshRes{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+	})
+}
+
+func GenKey(c *fiber.Ctx) error {
+	jwt, err := utils.GetTokenString(c)
+	utils.HandleErr(err)
+
+	clientId := utils.Hash(string(jwt))
+	jwtSecret := utils.Hash(string(jwt) + time.Now().String())
+
+	err = method.InsertClient(clientId, jwtSecret)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to generate client Key",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"clientId":  clientId,
+		"jwtSecret": jwtSecret,
 	})
 }
