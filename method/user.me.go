@@ -4,14 +4,13 @@ import (
 	"github.com/Backend-GAuth-server/db"
 	"github.com/Backend-GAuth-server/dto"
 	"github.com/Backend-GAuth-server/model"
-	"github.com/Backend-GAuth-server/utils"
 )
 
 func InsertUser(user dto.SignupReq) error {
 	db := db.GetDB()
 	tx := db.Create(&model.User{
 		Id:       user.Id,
-		Password: utils.Hash(user.Password),
+		Password: user.Password,
 		Name:     user.Name,
 		Email:    user.Email,
 		School:   user.School,
