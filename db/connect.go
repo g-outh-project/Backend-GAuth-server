@@ -4,19 +4,16 @@ import (
 	"fmt"
 
 	"github.com/Backend-GAuth-server/model"
-	"github.com/Backend-GAuth-server/utils"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var db *gorm.DB
-var err error
 
 func Start() {
 	var dbConfig map[string]string
-	dbConfig, err := godotenv.Read()
-	utils.HandlePanic(err)
+	dbConfig, _ = godotenv.Read()
 
 	mysqlCredentials := fmt.Sprintf(
 		"%s:%s@%s(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -28,8 +25,7 @@ func Start() {
 		dbConfig["MYSQL_DBNAME"],
 	)
 
-	db, err = gorm.Open(mysql.Open(mysqlCredentials), &gorm.Config{})
-	utils.HandlePanic(err)
+	db, _ = gorm.Open(mysql.Open(mysqlCredentials), &gorm.Config{})
 
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Client{})
