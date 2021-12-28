@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/Backend-GAuth-server/dto"
@@ -13,10 +12,10 @@ import (
 func Login(c *fiber.Ctx) error {
 	var req dto.LoginReq
 	var res dto.LoginRes
-	var clientID string
 
-	json.Unmarshal(c.Request().Header.Peek("ClientID"), &clientID)
-	fmt.Println(c.Request().Header.Peek("ClientID"), clientID)
+	clientId := c.Request().Header.Peek("gAuth")
+	cid := string(clientId[:])
+	fmt.Println(cid)
 
 	err := c.BodyParser(&req)
 	if err != nil {
