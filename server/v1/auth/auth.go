@@ -118,7 +118,7 @@ func GenKey(c *fiber.Ctx) error {
 	jwt, err := utils.GetTokenString(c)
 	utils.HandleErr(err)
 
-	clientId := utils.Hash(string(jwt))
+	clientId := utils.Hash(string(jwt) + time.Now().UTC().String())
 	jwtSecret := utils.Hash(string(jwt) + time.Now().String())
 
 	err = method.InsertClient(clientId, jwtSecret)
