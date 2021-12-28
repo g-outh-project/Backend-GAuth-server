@@ -48,7 +48,7 @@ func AccessToken(data dto.JWTSource, c *fiber.Ctx) string {
 		Nickname:          data.Nickname,
 		HashedAccessToken: data.HashedAccessToken,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(), // 10 Mins
+			ExpiresAt: time.Now().Add(10 * time.Hour).Unix(), // 10 Mins
 		},
 	})
 
