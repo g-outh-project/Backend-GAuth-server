@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 )
@@ -39,4 +40,12 @@ func GetSecretKey() string {
 
 	var jwtSignKey = jwtConfig["JWT_SECRET"]
 	return jwtSignKey
+}
+
+func GetClientId(c *fiber.Ctx) string {
+	clientId := c.Request().Header.Peek("clientId")
+	cid := string(clientId[:])
+	fmt.Println("--------clientId--------")
+	fmt.Println(cid)
+	return cid
 }
